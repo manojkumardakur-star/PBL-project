@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Room Allocation</title>
+    <style>
+        /* CSS STYLES ARE HERE FOR EASY VIEWING, 
+           BUT YOU CAN MOVE THEM TO style.css */
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Container for the Login Page */
+        #login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        /* Container for the Dashboard (Hidden by default) */
+        #dashboard-container {
+            display: none; /* Hidden until login */
+            width: 90%;
+            max-width: 1000px;
+            padding: 20px;
+        }
+
+        h1, h2 { color: #333; }
+
+        /* Input Styling */
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover { background-color: #0056b3; }
+
+        /* Room Grid Layout */
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        /* Room Card Styling */
+        .room-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 5px solid #ccc;
+            transition: transform 0.2s;
+        }
+
+        .room-card:hover { transform: translateY(-5px); }
+
+        /* Status Colors */
+        .available { border-left-color: #28a745; } /* Green */
+        .occupied { border-left-color: #dc3545; } /* Red */
+
+        .room-number { font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; }
+        .roommates { color: #666; font-size: 0.9rem; margin-bottom: 15px; }
+        
+        .book-btn {
+            background-color: #28a745;
+            width: 100%;
+        }
+        .book-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .logout-btn {
+            background-color: #dc3545;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SECTION 1: LOGIN PAGE -->
+    <div id="login-container">
+        <h2>Hostel Login</h2>
+        <p>Please enter your name to proceed</p>
+        <input type="text" id="studentName" placeholder="Enter your full name">
+        <button onclick="login()">Login</button>
+    </div>
+
+    <!-- SECTION 2: DASHBOARD (Room Selection) -->
+    <div id="dashboard-container">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 id="welcome-msg">Welcome</h2>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+        <p>Select a room to allocate yourself.</p>
+        
+        <div class="room-grid" id="room-list">
+            <!-- Rooms will be generated here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // --- JAVASCRIPT LOGIC ---
+
+        // 1. Simulating a Database (Array of Objects)
+        // status: 'available' or 'occupied'
+        // occupants: Array of names
+        let roomsData = [
+            { id: 101, occupants: [], status: 'available' },
+            { id: 102, occupants: ['Alice Johnson'], status: 'occupied' },
+            { id: 103, occupants: ['Bob Smith', 'Charlie Brown'], status: 'occupied' },
+            { id: 104, occupants: [], status: 'available' },
+            { id: 105, occupants: ['David Lee'], status: 'occupied' },
+            { id: 106, occupants: [], status: 'available' }
+        ];
+
+        let currentUser = "";
+
+        // 2. Login Function
+        function login() {
+            const nameInput = document.getElementById('studentName');
+            const name = nameInput.value.trim();
+
+            if (name === "") {
+                alert("Please enter your name!");
+                return;
+            }
+
+            currentUser = name;
+            
+            // Switch screens
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('dashboard-container').style.display = 'block';
+            
+            // Update welcome message
+            document.getElementById('welcome-msg').innerText = `Welcome, ${currentUser}`;
+
+            // Load the rooms
+            renderRooms();
+        }
+
+        // 3. Logout Function
+        function logout() {
+            currentUser = "";
+            document.getElementById('studentName').value = ""; // Clear input
+            document.getElementById('dashboard-container').style.display = 'none';
+            document.getElementById('login-container').style.display = 'block';
+        }
+
+        // 4. Render Rooms (Create HTML based on data)
+        function renderRooms() {
+            const roomList = document.getElementById('room-list');
+            roomList.innerHTML = ""; // Clear current list
+
+            roomsData.forEach(room => {
+                // Create the card HTML
+                const card = document.createElement('div');
+                card.className = `room-card ${room.status}`;
+
+                // Format roommates list
+                let roommatesText = "No roommates yet.";
+                if (room.occupants.length > 0) {
+                    roommatesText = room.occupants.join(", ");
+                }
+
+                // Create Button
+                let buttonHTML = "";
+                if (room.status === 'available') {
+                    buttonHTML = `<button class="book-btn" onclick="bookRoom(${room.id})">Book This Room</button>`;
+                } else {
+                    buttonHTML = `<button disabled>Room Occupied</button>`;
+                }
+
+                // Assemble the card
+                card.innerHTML = `
+                    <div class="room-number">Room ${room.id}</div>
+                    <div class="roommates"><strong>Roommates:</strong> ${roommatesText}</div>
+                    ${buttonHTML}
+                `;
+
+                roomList.appendChild(card);
+            });
+        }
+
+        // 5. Book Room Function
+        function bookRoom(roomId) {
+            // Find the room in our data
+            const roomIndex = roomsData.findIndex(r => r.id === roomId);
+            
+            if (roomIndex !== -1) {
+                // Add current user to the room
+                roomsData[roomIndex].occupants.push(currentUser);
+                roomsData[roomIndex].status = 'occupied';
+
+                // Refresh the view
+                renderRooms();
+                alert(`You have successfully booked Room ${roomId}!`);
+            }
+        }
+
+    </script>
+</body>
+</html>

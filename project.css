@@ -1,0 +1,122 @@
+/* CSS: This makes the website look good */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Login Box Styling */
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 350px;
+}
+
+.login-box h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box; /* Ensures padding doesn't widen the box */
+}
+
+/* General Button Styling */
+.btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.btn:hover { background-color: #0056b3; }
+
+/* Dashboard Styling */
+.dashboard {
+    display: none; /* Hidden by default */
+    width: 90%;
+    max-width: 1000px;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.logout-btn {
+    background-color: #dc3545;
+    width: auto;
+    padding: 10px 20px;
+}
+
+.logout-btn:hover { background-color: #a71d2a; }
+
+/* Room Grid Layout */
+.room-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.room-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border-top: 5px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Status Colors */
+.status-available { border-top-color: #28a745; } /* Green */
+.status-occupied { border-top-color: #dc3545; }  /* Red */
+
+.room-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.roommates-list {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    min-height: 40px;
+}
+
+.book-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.book-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
